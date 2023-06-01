@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify"
-import { arrayUnion, doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore"
-import { array, z } from 'zod'
+import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore"
+import { z } from 'zod'
 import { FIREBASE_DB } from "../config/firebase"
 
 type DataType = {
