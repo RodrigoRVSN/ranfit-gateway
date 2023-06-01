@@ -10,4 +10,4 @@ server.get('/activity/:machine_id', getMachine)
 server.post('/activity/:machine_id', connectUser)
 server.post('/activity', sendActivity)
 
-server.listen({ host: '0.0.0.0', port: PORT ? Number(PORT) : 8080 }).then(() => console.log(`🚀 Server running`))
+server.listen({ host: '0.0.0.0', port: PORT ? Number(PORT) : 8080 }).then((path) => console.log(`🚀 Server running in: ${path}`))

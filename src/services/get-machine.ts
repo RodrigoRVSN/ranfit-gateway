@@ -11,8 +11,9 @@ const getMachineParams = z.object({
 export const getMachine = async (request: FastifyRequest, reply: FastifyReply) => {
   const { machine_id } = getMachineParams.parse(request.params)
 
-  const machinesCollectionRef = doc(FIREBASE_DB, 'machines', machine_id);
-  const snapshot = await getDoc(machinesCollectionRef);
+  const machinesDocRef = doc(FIREBASE_DB, 'machines', machine_id);
+  console.log({ machinesDocRef })
+  const snapshot = await getDoc(machinesDocRef);
 
   if (!snapshot.exists()) {
     reply.code(404).send({ message: 'Machine not found' })
