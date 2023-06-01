@@ -10,9 +10,4 @@ server.get('/activity/:machine_id', getMachine)
 server.post('/activity/:machine_id', connectUser)
 server.post('/activity', sendActivity)
 
-server.listen({ port: Number(PORT) || 8080 }, (err, address) => {
-  if (err) {
-    process.exit(1)
-  }
-  console.log(`🚀 Server running at ${address}`)
-})
+server.listen({ host: '0.0.0.0', port: PORT ? Number(PORT) : 8080 }).then(() => console.log(`🚀 Server running`))
