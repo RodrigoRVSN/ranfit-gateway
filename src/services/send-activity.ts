@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify"
 import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore"
 import { z } from 'zod'
 import { FIREBASE_DB } from "../config/firebase"
+import { IUser } from "../@types/IUser"
 
 type DataType = {
   points: number;
@@ -14,6 +15,16 @@ const sendActivityBody = z.object({
   power: z.number({ required_error: 'Power is required' }),
   points: z.number({ required_error: 'Points is required' }),
 })
+
+const updateUserPoints = async (userId: string, newPoints: number) => {
+  const usersRef = doc(FIREBASE_DB, 'users', userId);
+  const userDocSnapshot = await getDoc(usersRef)
+  const userData = userDocSnapshot.data() as IUser
+
+  const updatedPoints = newPoints + userData.points
+
+  await setDoc(usersRef, { ...userData, points: updatedPoints }, { merge: true })
+}
 
 export const sendActivity = async (request: FastifyRequest, reply: FastifyReply) => {
   const body = sendActivityBody.parse(request.body)
@@ -38,6 +49,7 @@ export const sendActivity = async (request: FastifyRequest, reply: FastifyReply)
     }
 
     await setDoc(exercisesRef, { data: arrayUnion(newData) }, { merge: true });
+    await updateUserPoints(body.user_id, body.points)
 
     return reply.code(201).send({ message: `Activity registered at ${currentDate}` })
   }
@@ -49,6 +61,7 @@ export const sendActivity = async (request: FastifyRequest, reply: FastifyReply)
   existingData[exerciseDoneIndex] = updatedData;
 
   await setDoc(exercisesRef, { data: existingData }, { merge: true });
+  await updateUserPoints(body.user_id, body.points)
 
   return reply.code(200).send({ message: `Activity progress updated at ${currentDate}` })
 }
