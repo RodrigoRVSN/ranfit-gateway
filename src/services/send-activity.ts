@@ -3,12 +3,7 @@ import { arrayUnion, doc, getDoc, setDoc } from "firebase/firestore"
 import { z } from 'zod'
 import { FIREBASE_DB } from "../config/firebase"
 import { IUser } from "../@types/IUser"
-
-type DataType = {
-  points: number;
-  power: number;
-  date: string;
-}
+import { IExercise } from "../@types/IExercise"
 
 const sendActivityBody = z.object({
   user_id: z.string({ required_error: 'User ID is required' }),
@@ -38,11 +33,11 @@ export const sendActivity = async (request: FastifyRequest, reply: FastifyReply)
   const exercisesRef = doc(FIREBASE_DB, 'exercises', body.user_id);
   const exerciseDocSnapshot = await getDoc(exercisesRef);
 
-  const existingData: DataType[] = exerciseDocSnapshot.data()?.data
-  const exerciseDoneIndex: number = existingData?.findIndex((item: DataType) => item.date === currentDate)
+  const existingData: IExercise[] = exerciseDocSnapshot.data()?.data
+  const exerciseDoneIndex: number = existingData?.findIndex((item: IExercise) => item.date === currentDate)
 
   if (exerciseDoneIndex === -1 || exerciseDoneIndex === undefined) {
-    const newData: DataType = {
+    const newData: IExercise = {
       points: body.points,
       power: body.power,
       date: currentDate,
