@@ -6,5 +6,5 @@ export interface IUser {
   level: number
   name: string
   points: number
-  time: number
+  power: number
 }
